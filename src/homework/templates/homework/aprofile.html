@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>管理</title>
+    <link href="/static/bootstrap-3.3.7-dist/css/bootstrap.css" rel="stylesheet">
+    <link href="/static/bootstrap-3.3.7-dist/css/bootstrap-theme.css" rel="stylesheet">
+    <link href="/static/bootstrap-fileinput/css/fileinput.css" rel="stylesheet">
+</head>
+<body>
+<script src="/static/bootstrap-3.3.7-dist/js/jquery-3.3.1.js"></script>
+<script src="/static/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
+<script src="/static/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+<script src="/static/bootstrap-fileinput/js/fileinput.js"></script>
+<script src="/static/bootstrap-fileinput/js/locales/zh.js"></script>
+<div>
+    <div style="padding-top:2vh;padding-left:5vw;padding-right:5vw">
+        <h3 style="float:left;">助教：{{ student_name }}</h3>
+        <h3><a href="/at-l/" style="float: right;">退出</a></h3>
+    </div>
+    <div style="padding-top:8vh;padding-left:5vw;padding-right:5vw">
+        <h4><a href="/at-a/">所有学生</a></h4>
+    </div>
+    <div style="padding-top:3vh;padding-left:5vw;padding-right:5vw">
+        <h3 style="float:left;">我要批改的</h3>
+        <table class="table">
+            <tr>
+                <th>作业</th>
+                <th>截止日期</th>
+                <th>提交进度</th>
+                <th>提交数目</th>
+                <th>待批改</th>
+            </tr>
+            {% for h in homeworklist %}
+                <tr>
+                    <td>{{ h.name }}</td>
+                    <td>{{ h.cutoff }}</td>
+                    {% if h.can_submit %}
+                        {% if h.late %}
+                            <td>可补交</td>
+                        {% else %}
+                            <td>提交中</td>
+                        {% endif %}
+                    {% else %}
+                        <td>已关闭</td>
+                    {% endif %}
+                    <td><a href="/at-z/?all=false&to_score=false&homework_id={{ h.id }}">{{ h.mine }}份</a></td>
+                    <td><a href="/at-z/?all=false&to_score=true&homework_id={{ h.id }}">{{ h.to_score }}份</a></td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <div style="padding-top:8vh;padding-left:5vw;padding-right:5vw">
+        <h3 style="float:left;">全部</h3>
+        <table class="table">
+            <tr>
+                <th>作业</th>
+                <th>截止日期</th>
+                <th>提交进度</th>
+                <th>提交数目</th>
+                <th>待批改</th>
+            </tr>
+            {% for h in homeworklist %}
+                <tr>
+                    <td>{{ h.name }}</td>
+                    <td>{{ h.cutoff }}</td>
+                    {% if h.can_submit %}
+                        {% if h.late %}
+                            <td>可补交</td>
+                        {% else %}
+                            <td>提交中</td>
+                        {% endif %}
+                    {% else %}
+                        <td>已关闭</td>
+                    {% endif %}
+                    <td><a href="/at-z/?all=true&to_score=false&homework_id={{ h.id }}">{{ h.all }}份</a></td>
+                    <td><a href="/at-z/?all=true&to_score=true&homework_id={{ h.id }}">{{ h.all_to_score }}份</a></td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <div style="padding-top:3vh;padding-left:5vw;padding-right:5vw">
+        <h3 style="float:left;">工作进度</h3>
+        <table class="table">
+            <tr>
+                <th>助教</th>
+                {% for h in homeworks %}
+                    <th>{{ h.name }}</th>
+                {% endfor %}
+            </tr>
+            {% for a in assistantlist %}
+                <tr>
+                    <td>{{ a.name }}</td>
+                    {% for w in a.work %}
+                        <td>
+                            <a href="/at-z/?all=false&to_score=true&homework_id={{ w.homework_id }}&student_id={{ a.student_id }}">{{ w.toscore }} /</a>
+                            <a href="/at-z/?all=false&to_score=false&homework_id={{ w.homework_id }}&student_id={{ a.student_id }}">{{ w.all }}</a>
+                        </td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+</body>
+</html>

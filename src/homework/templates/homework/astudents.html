@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>所有学生</title>
+    <link href="/static/bootstrap-3.3.7-dist/css/bootstrap.css" rel="stylesheet">
+    <link href="/static/bootstrap-3.3.7-dist/css/bootstrap-theme.css" rel="stylesheet">
+    <link href="/static/bootstrap-fileinput/css/fileinput.css" rel="stylesheet">
+
+</head>
+<body>
+<script src="/static/bootstrap-3.3.7-dist/js/jquery-3.3.1.js"></script>
+<script src="/static/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="/static/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+<script src="/static/bootstrap-fileinput/js/fileinput.js"></script>
+<script src="/static/bootstrap-fileinput/js/locales/zh.js"></script>
+<div>
+    <div style="padding-top:2vh;padding-left:5vw;padding-right:5vw">
+        <h3 style="float:left;">所有学生</h3>
+        <h3><a href="/at-x/" style="float: right;">主页</a></h3>
+    </div>
+    <div style="padding-top:8vh;padding-left:5vw;padding-right:5vw">
+        <a href="/a_xls/">导出excel</a>
+        <table class="table">
+            <tr>
+                <th>学号</th>
+                <th>学院</th>
+                <th>姓名</th>
+                {% for h in homeworklist %}
+                    <th>{{ h.name }}</th>
+                {% endfor %}
+            </tr>
+            {% for s in studentlist %}
+                <tr>
+                    <td style="vertical-align: middle">
+                        <a href="/at-d/?student_id={{ s.student_id }}">{{ s.student_id }}</a>
+                    </td>
+                    <td style="vertical-align: middle">{{ s.school }}</td>
+                    <td style="vertical-align: middle">{{ s.name }}</td>
+                    {% for score in s.scores %}
+                        <td style="vertical-align: middle">{{ score }}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+</body>
+</html>

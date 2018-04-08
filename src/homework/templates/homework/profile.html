@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>我的作业</title>
+    <link href="/static/bootstrap-3.3.7-dist/css/bootstrap.css" rel="stylesheet">
+    <link href="/static/bootstrap-3.3.7-dist/css/bootstrap-theme.css" rel="stylesheet">
+    <link href="/static/bootstrap-fileinput/css/fileinput.css" rel="stylesheet">
+
+</head>
+<body>
+<script src="/static/bootstrap-3.3.7-dist/js/jquery-3.3.1.js"></script>
+<script src="/static/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="/static/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+<script src="/static/bootstrap-fileinput/js/fileinput.js"></script>
+<script src="/static/bootstrap-fileinput/js/locales/zh.js"></script>
+<script>
+    function initFileInput(ctrlID, hId, subID) {
+        var control = $('#' + ctrlID);
+        control.fileinput({
+            language: 'zh',
+            uploadUrl: "/upload/", //上传的地址
+            allowedFileExtensions: ['zip', '7z', 'rar', 'py', 'pdf', 'doc', 'docx'],//接收的文件后缀
+            uploadExtraData: {
+                "csrfmiddlewaretoken": '{{ csrf_token }}', //csrf
+                "homework_id": hId
+            }
+        }).on("fileuploaded", function (event, data) {
+            if (data.response.success) {
+                $('#' + subID).text("已提交");
+                alert("提交成功！");
+                location.reload();
+            }
+            else {
+                alert("提交失败！");
+                location.reload();
+            }
+        })
+    }
+
+    function submit_late(ctrlID, hId, subID) {
+        alert("补交作业将被降级评分，且补交后无法保留先前文件与评分，请慎重！");
+        var control = $('#' + ctrlID);
+        control.html("<input style='width: 20vw' id='once_upload' type='file' class='file' data-show-preview='false'/>");
+        initFileInput('once_upload', hId, subID);
+    }
+</script>
+<div>
+    <div style="padding-top:2vh;padding-left:5vw;padding-right:5vw">
+        <h3 style="float:left;">
+            姓名：{{ student.name }}&nbsp;&nbsp;&nbsp;学院：{{ student.school }}&nbsp;&nbsp;&nbsp;学号：{{ student.student_id }}</h3>
+        <h3><a href="/logout/" style="float: right;">退出</a></h3>
+    </div>
+    <div style="padding-top:5vh;padding-left:5vw;padding-right:5vw">
+        <table class="table">
+            <tr>
+                <th>作业</th>
+                <th>截止日期</th>
+                <th>提交情况</th>
+                <th>查看提交</th>
+                <th>成绩</th>
+                <th>反馈</th>
+                <th>提交</th>
+            </tr>
+            {% for h in homeworks %}
+                <tr>
+                    <td style="vertical-align: middle">{{ h.name }}</td>
+                    <td style="vertical-align: middle">{{ h.cutoff }}</td>
+                    {% if h.last_submit %}
+                        <td style="vertical-align: middle">
+                            {{ h.last_submit }}
+                            {% if h.late %}
+                                补交
+                            {% endif %}
+                        </td>
+                    {% else %}
+                        <td id="{{ h.id }}_isSubmit" style="vertical-align: middle">未提交</td>
+                    {% endif %}
+                    {% if h.last_submit %}
+                        <td style="vertical-align: middle">
+                            <a href="/download/?homework_id={{ h.id }}">{{ h.file }}</a>
+                        </td>
+                    {% else %}
+                        <td id="{{ h.id }}_isSubmit" style="vertical-align: middle">未提交</td>
+                    {% endif %}
+                    {% if h.score %}
+                        <td style="vertical-align: middle">{{ h.score }}</td>
+                    {% else %}
+                        <td style="vertical-align: middle">—</td>
+                    {% endif %}
+                    <td style="vertical-align: middle"><p>{{ h.comment }}</p></td>
+                    {% if h.can_submit %}
+                        {% if h.late_submit %}
+                            <td id="{{ h.id }}_late" style="vertical-align: middle">
+                                <a onclick="submit_late('{{ h.id }}_late', '{{ h.id }}', '{{ h.id }}_isSubmit')"
+                                   style="cursor:pointer">补交</a>
+                            </td>
+                        {% else %}
+                            <td style="width: 25vw;vertical-align: middle">
+                                <input style="width: 20vw" id="{{ h.id }}_upload" type="file" class="file"
+                                       data-show-preview="false"/>
+                                <script>
+                                    initFileInput("{{ h.id }}_upload", "{{ h.id }}", "{{ h.id }}_isSubmit");
+                                </script>
+                            </td>
+                        {% endif %}
+                    {% else %}
+                        <td>提交关闭</td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <div style="padding-top:5vh;padding-left:5vw;padding-right:5vw">
+        <p style="float: right;">tip：请尽量直接提交py文件</p>
+    </div>
+    <div style="padding-top:5vh;padding-left:5vw;padding-right:5vw">
+        <p style="float: right;">tip：仅可提交py,zip,rar,7z,doc,docx,pdf</p>
+    </div>
+    <div style="padding-top:5vh;padding-left:5vw;padding-right:5vw">
+        <p style="float: right;">tip：有成绩问题联系助教冀锐</p>
+    </div>
+</div>
+</body>
+</html>

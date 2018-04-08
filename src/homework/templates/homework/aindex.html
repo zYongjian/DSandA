@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>助教登录</title>
+    <link href="/static/bootstrap-3.3.7-dist/css/bootstrap.css" rel="stylesheet">
+    <link href="/static/bootstrap-3.3.7-dist/css/bootstrap-theme.css" rel="stylesheet">
+</head>
+<body>
+<script src="/static/bootstrap-3.3.7-dist/js/jquery-3.3.1.js"></script>
+<script src="/static/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
+<script src="/static/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+<script src="/static/bootstrap-fileinput/js/fileinput.js"></script>
+<script src="/static/bootstrap-fileinput/js/locales/zh.js"></script>
+<div style="padding-top:15vh;text-align:center;">
+    <h1>数算作业评分</h1>
+    <br></br>
+    {% if message %}
+        <div class="alert alert-warning" style="display:inline-block;">{{ message }}</div>
+    {% endif %}
+</div>
+<div class="container">
+    <div class="col-md-4 col-md-offset-4">
+        <form class='form-login' action="/at-x/" method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                {{ login_form.student_id.label_tag }}
+                {{ login_form.student_id }}
+            </div>
+            <div class="form-group">
+                {{ login_form.password.label_tag }}
+                {{ login_form.password }}
+            </div>
+            <button type="reset" class="btn btn-default pull-left">重置</button>
+            <button type="submit" class="btn btn-primary pull-right">登录</button>
+        </form>
+    </div>
+</div>
+<br></br>
+<div style="text-align:center;">
+    <a class="text-center" href="/at-p/">注册</a>
+</div>
+</body>
+</html>
